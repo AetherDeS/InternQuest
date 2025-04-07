@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, Button, ScrollView, TextProps, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { View, Text, Button, ScrollView, TextProps, StyleSheet, Pressable, Dimensions, } from 'react-native';
 import ThemedText from "./ThemedText";
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withDecay, } from 'react-native-reanimated';
+import { useState } from "react";
 import {
     PanGestureHandler,
     GestureHandlerRootView,
@@ -12,8 +13,10 @@ import {
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 
+import Modal from "../modal/eventModal";
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 const { height } = Dimensions.get('window');
+
 
 /**
  * Программист - Programmer
@@ -37,7 +40,7 @@ export type JobTagProps = TextProps & {
 const jobTypeMap = {
     Default: { label: '', icon: '' },
     Programmer: { label: 'Программист', icon: '💻' },
-    Designer: { label: 'Дизайнер', icon: '🎨' },
+    Designer: { label: 'Дизайнер', icon: '🎓' },
     CarMechanic: { label: 'Автомеханик', icon: '🔧' },
     Welder: { label: 'Сварщик', icon: '🔥' },
     Carpenter: { label: 'Столяр', icon: '🔨' },
@@ -46,7 +49,6 @@ const jobTypeMap = {
     Internship: { label: 'Стажировка', icon: '' },
     PartTimeJob: { label: 'Подработка', icon: '' },
 };
-
 // Компонент JobTag
 export function JobTag({ type }: JobTagProps) {
     // Получаем текст и иконку из маппинга
@@ -88,11 +90,12 @@ export function JobTag({ type }: JobTagProps) {
 const JobContainer: React.FC<JobContainerProps> = ({
     jobTitle, jobPrice, jobOrg, jobGeo, jobSpec, jobType
 }) => {
-    const handlePress = () => {
+    const [modalOpen, setModalOpen] = useState(false);
 
-    }
+
     return (
-        <Pressable onPress={handlePress}>
+
+        <Pressable onPress={() => setModalOpen(true)}>
             <View style={{ width: '94%', height: 'auto', paddingTop: 4, padding: 14, paddingBottom: 8, marginBottom: 14, borderRadius: 20, backgroundColor: primary2, alignSelf: 'center', }}>
                 <ThemedText type='jobTitle'>{jobTitle || 'не указано'}</ThemedText>
                 <ThemedText style={{ marginTop: -4, marginBottom: 4 }} type='jobPrice'>{jobPrice || 'доход не указан'}</ThemedText>
@@ -103,11 +106,75 @@ const JobContainer: React.FC<JobContainerProps> = ({
                 <ThemedText type='jobOrgGeo'>{jobOrg || 'название не указано'}</ThemedText>
                 <ThemedText type='jobOrgGeo'>{jobGeo || 'местоположение не указано'}</ThemedText>
             </View>
+            <Modal
+                isOpen={modalOpen}>
+                <View style={styles.modal}>
+                    <Pressable onPress={() => {
+                        setModalOpen(false)
+                    }}>
+                        <View>
+                            <View style={styles.dragIndicator} />
+                        </View>
+                    </Pressable>
+                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 10, paddingTop: 0, }}>
+                        <View style={{ width: "100%" }}>
+
+                            <ThemedText type='modalTitle'>{jobTitle}</ThemedText>
+                            <View style={{ width: 'auto', height: 1, backgroundColor: accent1, marginTop: 10, marginBottom: 10 }}></View>
+                            <ThemedText type="jobPrice">{jobPrice || "Доход не указан"}</ThemedText>
+                            <View style={{ flexDirection: 'column', flexWrap: 'wrap', gap: 6, marginBottom: 2, marginTop: 10, }}>
+                                <JobTag type={jobSpec} />
+                                <JobTag type={jobType} />
+                            </View>
+                            <ThemedText type="jobOrgGeo">Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии</ThemedText>
+                            <ThemedText type="jobOrgGeo" style={{ marginTop: 10, }}>Плюсы этой вакансии: </ThemedText>
+                            <ThemedText type="jobOrgGeo">- Первый плюс</ThemedText>
+                            <ThemedText type="jobOrgGeo">- Второй плюс</ThemedText>
+                            <ThemedText type="jobOrgGeo">- Третий плюс</ThemedText>
+                            <ThemedText type="jobOrgGeo">- Четвертый плюс</ThemedText>
+                            <View style={{marginBottom: 10,}}>
+                                <ThemedText type="jobOrgGeo">Контакты</ThemedText>
+                                <ThemedText type="jobOrgGeo">Почта: rabota@example.com</ThemedText>
+                                <ThemedText type="jobOrgGeo">Телефон: +0 (000) 000 00-00</ThemedText>
+                            </View>
+
+                            <ThemedText type='jobOrgGeo'>{jobOrg || 'название не указано'}</ThemedText>
+                            <ThemedText type='jobOrgGeo'>{jobGeo || 'местоположение не указано'}</ThemedText>
+                        </View>
+                    </ScrollView>
+                </View>
+            </Modal>
         </Pressable>
+
     );
 };
 
 const styles = StyleSheet.create({
+    modal: {
+        alignSelf: 'center',
+        width: Dimensions.get('window').width + 2,
+        height: height - 100,
+        marginTop: 66,
+        backgroundColor: primary2,
+        borderWidth: 1,
+        borderTopColor: '#fff',
+        borderRightColor: '#fff',
+        borderLeftColor: '#fff',
+        borderBottomColor: primary2,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+
+    },
+    dragIndicator: {
+        width: 50,
+        height: 10,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        marginTop: -4,
+        marginBottom: 4,
+    },
     specContainer: {
         width: 'auto',
         height: 'auto',

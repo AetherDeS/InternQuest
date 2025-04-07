@@ -8,7 +8,7 @@ const {primary1, primary2, accent1, accent_gr1, accent_gr2} = ayuDark;
 export type ThemedTextProps = TextProps & {
     lightColor?: string;
     darkColor?: string;
-    type?: 'default' | 'title' | 'appTitle' | 'newsCardDate' | 'newsCardTitle' | 'newsCardDefinition' | 'newsCardLink' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo';
+    type?: 'default' | 'title' | 'appTitle' | 'newsCardDate' | 'newsCardTitle' | 'newsCardDefinition' | 'newsCardLink' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo' | 'modalTitle';
 };
 
 function ThemedText({
@@ -34,6 +34,7 @@ function ThemedText({
                 type === 'jobTitle' ? styles.jobTitle : undefined,
                 type === 'jobPrice' ? styles.jobPrice : undefined,
                 type === 'jobOrgGeo' ? styles.jobOrgGeo : undefined,
+                type === 'modalTitle' ? styles.modalTitle : undefined,
                 style,
             ]}
             {...rest}
@@ -110,7 +111,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#fff',
     },
-
+    modalTitle: {
+        fontFamily: 'Comfortaa',
+        fontSize: 28,
+        color: '#fff',
+        wordWrap: 'wrap',
+    }
 });
 
 export default ThemedText;

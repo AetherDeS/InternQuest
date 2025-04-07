@@ -34,7 +34,7 @@ function HomeScreen() {
       <ScrollView>
         <JobContainer
           jobTitle="Администратор базы данных поликлиники"
-          jobPrice="2 000₽ неделю"
+          jobPrice="2 000₽ в неделю"
           jobOrg="ООО Поликлиника"
           jobGeo="Р-н Перово"
           jobSpec="Programmer"
@@ -47,7 +47,7 @@ function HomeScreen() {
           jobSpec="Programmer"
           jobType='Job' />
           <JobContainer
-          jobTitle="Frontend разработчик(стажер)"
+          jobTitle="Frontend разработчик (стажер)"
           jobPrice=""
           jobOrg="IntraVision"
           jobGeo="Москва"
@@ -58,30 +58,29 @@ function HomeScreen() {
           jobPrice=""
           jobOrg="ООО Поликлиника"
           jobGeo="Р-н Перово"
-          jobSpec="Programmer"
+          jobSpec="Carpenter"
           jobType='Practice' />
           <JobContainer
           jobTitle="Администратор базы данных поликлиники"
           jobPrice="2 000₽ неделю"
           jobOrg="ООО Поликлиника"
           jobGeo="Р-н Перово"
-          jobSpec="Programmer"
+          jobSpec="CarMechanic"
           jobType='PartTimeJob' />
           <JobContainer
           jobTitle="Администратор базы данных поликлиники"
           jobPrice="2 000₽ неделю"
           jobOrg="ООО Поликлиника"
           jobGeo="Р-н Перово"
-          jobSpec="Programmer"
+          jobSpec="Welder"
           jobType='PartTimeJob' />
           <JobContainer
           jobTitle="Администратор базы данных поликлиники"
           jobPrice="2 000₽ неделю"
           jobOrg="ООО Поликлиника"
           jobGeo="Р-н Перово"
-          jobSpec="Programmer"
+          jobSpec="Designer"
           jobType='PartTimeJob' />
-          {/* <ModalScreenInfo></ModalScreenInfo> */}
       </ScrollView>
     </View>
   );

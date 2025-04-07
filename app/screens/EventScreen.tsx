@@ -1,13 +1,17 @@
 import React from 'react';
-import { StyleSheet, StatusBar, Text, View, Image, ScrollView, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
+import { StyleSheet, StatusBar, Text, View, Image, ScrollView, ActivityIndicator, Pressable, Dimensions } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
 import MasonryList from '@react-native-seoul/masonry-list';
 import HeaderLogo from '../components/HeaderLogo';
 import axios from 'axios';
-
+import { useFocusEffect } from '@react-navigation/native'; // Импортируем useFocusEffect
+import ThemedText from '../components/ThemedText';
+import Modal from '../modal/eventModal';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
+const { height } = Dimensions.get('window');
+
 
 type Item = {
   id: string;
@@ -20,7 +24,7 @@ const App = () => {
   const [data, setData] = useState<Item[]>([]); // Состояние для хранения данных
   const [loading, setLoading] = useState(true); // Состояние загрузки
   const [error, setError] = useState<string | null>(null); // Состояние ошибки
-
+  const [modalOpen, setModalOpen] = useState(false);
   // Функция для загрузки данных
   const fetchData = async () => {
     try {
@@ -36,25 +40,24 @@ const App = () => {
       setData(response.data);
     } catch (err) {
       console.error('Ошибка при запросе:', err);
-      setError('Не удалось загрузить данные, уже чиним.');
+      setError(`Не удалось загрузить данные, уже чиним.\n${err}`);
     } finally {
       setLoading(false); // Загрузка завершена
     }
   };
 
-  useEffect(() => {
-    // Загружаем данные при монтировании компонента
-    fetchData();
+  // Используем useFocusEffect для выполнения запроса при фокусировке экрана
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Экран в фокусе. Загружаем данные...');
+      fetchData(); // Вызываем функцию загрузки данных
 
-    // Устанавливаем интервал для обновления данных каждые 10 секунд
-    const intervalId = setInterval(() => {
-      console.log('Обновление данных...');
-      fetchData();
-    }, 60000); // 10 секунд
-
-    // Очищаем интервал при размонтировании компонента
-    return () => clearInterval(intervalId);
-  }, []);
+      // Очищаем ресурсы, если необходимо
+      return () => {
+        console.log('Экран потерял фокус.');
+      };
+    }, [])
+  );
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -76,22 +79,64 @@ const App = () => {
   };
 
   return (
-    <View style={{backgroundColor: primary1}}>
+    <View style={{ backgroundColor: primary1 }}>
       <HeaderLogo />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <MasonryList
-          data={data} // Используем динамические данные
-          keyExtractor={(item) => (item as Item).id} // Явное преобразование типа
-          renderItem={renderItem}
-          numColumns={2}
-          contentContainerStyle={styles.masonryContainer}
-        />
+        <Pressable onPress={() => setModalOpen(true)}>
+          <MasonryList
+            data={data} // Используем динамические данные
+            keyExtractor={(item) => (item as Item).id} // Явное преобразование типа
+            renderItem={renderItem}
+            numColumns={2}
+            contentContainerStyle={styles.masonryContainer}
+          />
+          <Modal
+            isOpen={modalOpen}>
+            <View style={styles.modal}>
+              <Pressable onPress={() => {
+                setModalOpen(false)
+              }}>
+                <View>
+                  <View style={styles.dragIndicator} />
+                </View>
+              </Pressable>
+              <View>
+                <ThemedText type="modalTitle"></ThemedText>
+              </View>
+            </View>
+          </Modal>
+        </Pressable>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modal: {
+    alignSelf: 'center',
+    width: Dimensions.get('window').width + 2,
+    height: height - 100,
+    marginTop: 66,
+    backgroundColor: primary2,
+    borderWidth: 1,
+    borderTopColor: '#fff',
+    borderRightColor: '#fff',
+    borderLeftColor: '#fff',
+    borderBottomColor: primary2,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+
+  },
+  dragIndicator: {
+    width: 50,
+    height: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginTop: -4,
+    marginBottom: 4,
+  },
   scrollContainer: {
     flexGrow: 1,
     padding: 10,
