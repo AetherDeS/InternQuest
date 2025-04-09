@@ -10,9 +10,10 @@ import {
 type PROPS = ModalProps & {
   isOpen: boolean;
   withInput?: boolean;
+  animation?: "fade" | "slide";
 }
 
-const Modal = ({ isOpen, withInput, children, ...rest }: PROPS) => {
+const Modal = ({ animation = "slide", isOpen, withInput, children, ...rest }: PROPS) => {
   const content = withInput ? (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     { children }
@@ -26,7 +27,7 @@ return (
   <RNModal
     visible={isOpen}
     transparent
-    animationType='slide'
+    animationType={animation}
     statusBarTranslucent
     {...rest}>
     {content}

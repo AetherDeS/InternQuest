@@ -8,7 +8,7 @@ const {primary1, primary2, accent1, accent_gr1, accent_gr2} = ayuDark;
 export type ThemedTextProps = TextProps & {
     lightColor?: string;
     darkColor?: string;
-    type?: 'default' | 'title' | 'appTitle' | 'newsCardDate' | 'newsCardTitle' | 'newsCardDefinition' | 'newsCardLink' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo' | 'modalTitle';
+    type?: 'default' | 'title' | 'appTitle' | 'newsTitle' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo' | 'modalTitle';
 };
 
 function ThemedText({
@@ -26,10 +26,7 @@ function ThemedText({
                 { color }, 
                 type === 'appTitle' ? styles.appTitle : undefined,
                 // -- Типы для страницы с новостями -- 
-                type === 'newsCardDate' ? styles.newsCardDate : undefined,
-                type === 'newsCardTitle' ? styles.newsCardTitle : undefined,
-                type === 'newsCardDefinition' ? styles.newsCardDefinition : undefined,
-                type === 'newsCardLink' ? styles.newsCardLink : undefined,
+                type === 'newsTitle' ? styles.newsTitle : undefined,
                 // -- Типы для страницы с работой -- 
                 type === 'jobTitle' ? styles.jobTitle : undefined,
                 type === 'jobPrice' ? styles.jobPrice : undefined,
@@ -65,36 +62,15 @@ const styles = StyleSheet.create({
         color: "#fff",
         
     },
-    newsCardDate: {
+    newsTitle: {
         fontFamily: 'Comfortaa',
-        fontSize: 14,
-        lineHeight: 16,
-        color: accent1,
+        width: "100%",
+        fontSize: 20,
+        color: "#fff",
 
-        textShadowColor: "rgba(36, 36, 36, 0.67)",
+        textShadowColor: "rgba(36, 36, 36, 1)",
         textShadowOffset: {width: 1, height: 1},
         textShadowRadius: 2,
-    },
-    newsCardTitle: {
-        fontFamily: 'Comfortaa',
-        fontSize: 20,
-        lineHeight: 27,
-        color: '#fff',
-
-    },
-    newsCardDefinition: {
-        fontFamily: 'Comfortaa',
-        fontSize: 10,
-        color: "#fff",
-    },
-    newsCardLink: {
-        fontFamily: 'Comfortaa',
-        fontSize: 24,
-        color: accent1,
-
-        textShadowColor: "rgba(36, 36, 36, 0.67)",
-        textShadowOffset: {width: 0, height: 0},
-        textShadowRadius: 4,
     },
     jobTitle: {
         fontFamily: 'Comfortaa',
