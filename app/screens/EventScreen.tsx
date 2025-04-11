@@ -6,12 +6,11 @@ import HeaderLogo from '../components/HeaderLogo';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native'; // Импортируем useFocusEffect
 import ThemedText from '../components/ThemedText';
-import Modal from '../modal/eventModal';
+import Modal from '../modal/CustomModal';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 const { height } = Dimensions.get('window');
-
 
 type Item = {
   id: string;
@@ -25,10 +24,12 @@ const App = () => {
   const [loading, setLoading] = useState(true); // Состояние загрузки
   const [error, setError] = useState<string | null>(null); // Состояние ошибки
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null); // ID выбранного элемента
+
   // Функция для загрузки данных
   const fetchData = async () => {
     try {
-      const response = await axios.get<Item[]>('http://77.239.115.153/internapi.php?table=events');
+      const response = await axios.get<Item[]>('http://77.239.115.153:3000/api/events');
       console.log('Данные с сервера:', response.data);
 
       // Проверяем, что данные являются массивом
@@ -67,45 +68,50 @@ const App = () => {
     return <Text>{error}</Text>;
   }
 
+  // Функция для обработки нажатия на элемент
+  const handleItemPress = (id: string) => {
+    setSelectedItemId(id); // Сохраняем ID выбранного элемента
+    setModalOpen(true); // Открываем модальное окно
+  };
+
   const renderItem = ({ item, i }: { item: unknown; i: number }) => {
     const typedItem = item as Item; // Преобразуем тип item из unknown в Item
     return (
-      <View style={[styles.item]}>
-        <Image source={{ uri: typedItem.image }} style={styles.image} />
-        <Text style={styles.date}>{typedItem.date}</Text>
-        <Text style={styles.description}>{typedItem.title}</Text>
-      </View>
+      <Pressable onPress={() => handleItemPress(typedItem.id)}> {/* Добавляем обработчик нажатия */}
+        <View style={[styles.item]}>
+          <Image source={{ uri: typedItem.image }} style={styles.image} />
+          <Text style={styles.date}>{typedItem.date}</Text>
+          <Text style={styles.description}>{typedItem.title}</Text>
+        </View>
+      </Pressable>
     );
   };
 
+  // Найти выбранный элемент по ID
+  const selectedItem = data.find((item) => item.id === selectedItemId);
+
   return (
-    <View style={{ backgroundColor: primary1 }}>
+    <View style={{ backgroundColor: primary1, height: "100%", }}>
       <HeaderLogo />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Pressable onPress={() => setModalOpen(true)}>
-          <MasonryList
-            data={data} // Используем динамические данные
-            keyExtractor={(item) => (item as Item).id} // Явное преобразование типа
-            renderItem={renderItem}
-            numColumns={2}
-            contentContainerStyle={styles.masonryContainer}
-          />
-          <Modal
-            isOpen={modalOpen}>
-            <View style={styles.modal}>
-              <Pressable onPress={() => {
-                setModalOpen(false)
-              }}>
-                <View>
-                  <View style={styles.dragIndicator} />
-                </View>
-              </Pressable>
-              <View>
-                <ThemedText type="modalTitle"></ThemedText>
+        <MasonryList
+          data={data} // Используем динамические данные
+          keyExtractor={(item) => (item as Item).id} // Явное преобразование типа
+          renderItem={renderItem}
+          numColumns={2}
+          contentContainerStyle={styles.masonryContainer}
+        />
+        <Modal isOpen={modalOpen}>
+            {selectedItem && (
+          <View style={styles.modal}>
+                <Image source={{uri: selectedItem.image}} style={styles.modalBanner}/>
+                    <Pressable onPress={() => {setModalOpen(false)}}>
+                            <View style={styles.dragIndicator} />
+                    </Pressable>
+                    <ThemedText type="modalTitleEventsNews">{selectedItem.title}</ThemedText>
               </View>
-            </View>
-          </Modal>
-        </Pressable>
+            )}
+        </Modal>
       </ScrollView>
     </View>
   );
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
   modal: {
     alignSelf: 'center',
     width: Dimensions.get('window').width + 2,
-    height: height - 100,
+    height: Dimensions.get('window').height - 100,
     marginTop: 66,
     backgroundColor: primary2,
     borderWidth: 1,
@@ -125,16 +131,27 @@ const styles = StyleSheet.create({
     borderBottomColor: primary2,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
+    padding: 0,
     alignItems: 'center',
 
+  },
+  modalBanner: {
+    position: "absolute",
+    width: "100%",
+    height: 190,
+    borderRadius: 20,
+
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
   },
   dragIndicator: {
     width: 50,
     height: 10,
     backgroundColor: '#fff',
     borderRadius: 5,
-    marginTop: -4,
+    marginTop: 8,
     marginBottom: 4,
   },
   scrollContainer: {
@@ -144,12 +161,12 @@ const styles = StyleSheet.create({
     backgroundColor: primary1,
   },
   masonryContainer: {
-    paddingBottom: 40,
+    paddingBottom: 10,
   },
   item: {
-    padding: 5,
+    padding: 0,
     paddingBottom: 10,
-    margin: 5,
+    margin: 4,
     borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: '#38373C',
@@ -170,8 +187,10 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 20,
     wordWrap: 'wrap',
+    marginTop: 0,
+    margin: 5,
   },
 });
 

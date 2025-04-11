@@ -13,7 +13,7 @@ import {
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 
-import Modal from "../modal/eventModal";
+import Modal from "../modal/CustomModal";
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 const { height } = Dimensions.get('window');
 
@@ -26,13 +26,18 @@ const { height } = Dimensions.get('window');
  * Дизайнер - Designer */
 
 interface JobContainerProps {
+    jobId: number; // ID вакансии
     jobTitle: string;
     jobPrice: string;
     jobOrg: string;
     jobGeo: string;
     jobSpec?: 'Programmer' | 'Designer' | 'CarMechanic' | 'Welder' | 'Carpenter';
     jobType?: 'Job' | 'Practice' | 'Internship' | 'PartTimeJob' | 'Default';
-}
+    jobDescription?: string; // Описание вакансии
+    jobEmail?: string; // Email для связи
+    jobPhone?: string; // Телефон для связи
+  }
+  
 export type JobTagProps = TextProps & {
     type?: 'Programmer' | 'Designer' | 'CarMechanic' | 'Welder' | 'Carpenter' | 'Job' | 'Practice' | 'Internship' | 'PartTimeJob' | 'Default';
 }
@@ -87,67 +92,77 @@ export function JobTag({ type }: JobTagProps) {
 }
 
 // Норм цвет тож тёмныйrgb(156, 140, 180)
-const JobContainer: React.FC<JobContainerProps> = ({
-    jobTitle, jobPrice, jobOrg, jobGeo, jobSpec, jobType
-}) => {
+export function JobContainer({
+    jobId,
+    jobTitle,
+    jobPrice,
+    jobOrg,
+    jobGeo,
+    jobSpec,
+    jobType,
+    jobDescription,
+    jobEmail,
+    jobPhone,
+  }: JobContainerProps) {
     const [modalOpen, setModalOpen] = useState(false);
-
-
+  
     return (
-
-        <Pressable onPress={() => setModalOpen(true)}>
-            <View style={{ width: '94%', height: 'auto', paddingTop: 4, padding: 14, paddingBottom: 8, marginBottom: 14, borderRadius: 20, backgroundColor: primary2, alignSelf: 'center', }}>
-                <ThemedText type='jobTitle'>{jobTitle || 'не указано'}</ThemedText>
-                <ThemedText style={{ marginTop: -4, marginBottom: 4 }} type='jobPrice'>{jobPrice || 'доход не указан'}</ThemedText>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 2 }}>
-                    <JobTag type={jobSpec} />
-                    <JobTag type={jobType} />
+      <Pressable onPress={() => setModalOpen(true)}>
+        <View
+          style={{
+            width: '94%',
+            height: 'auto',
+            paddingTop: 4,
+            padding: 14,
+            paddingBottom: 8,
+            marginBottom: 14,
+            borderRadius: 20,
+            backgroundColor: primary2,
+            alignSelf: 'center',
+          }}
+        >
+          <ThemedText type="jobTitle">{jobTitle || 'не указано'}</ThemedText>
+          <ThemedText style={{ marginTop: -4, marginBottom: 4 }} type="jobPrice">
+            {jobPrice || 'доход не указан'}
+          </ThemedText>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 2 }}>
+            <JobTag type={jobSpec} />
+            <JobTag type={jobType} />
+          </View>
+          <ThemedText type="jobOrgGeo">{jobOrg || 'название не указано'}</ThemedText>
+          <ThemedText type="jobOrgGeo">{jobGeo || 'местоположение не указано'}</ThemedText>
+        </View>
+        <Modal isOpen={modalOpen}>
+          <View style={styles.modal}>
+            <Pressable onPress={() => setModalOpen(false)}>
+              <View>
+                <View style={styles.dragIndicator} />
+              </View>
+            </Pressable>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 10, paddingTop: 0 }}>
+              <View style={{ width: '100%' }}>
+                <ThemedText type="modalTitle">{jobTitle}</ThemedText>
+                <View style={{ width: 'auto', height: 1, backgroundColor: accent1, marginTop: 10, marginBottom: 10 }}></View>
+                <ThemedText type="jobPrice">{jobPrice || 'Доход не указан'}</ThemedText>
+                <View style={{ flexDirection: 'column', flexWrap: 'wrap', gap: 6, marginBottom: 2, marginTop: 10 }}>
+                  <JobTag type={jobSpec} />
+                  <JobTag type={jobType} />
                 </View>
-                <ThemedText type='jobOrgGeo'>{jobOrg || 'название не указано'}</ThemedText>
-                <ThemedText type='jobOrgGeo'>{jobGeo || 'местоположение не указано'}</ThemedText>
-            </View>
-            <Modal
-                isOpen={modalOpen}>
-                <View style={styles.modal}>
-                    <Pressable onPress={() => {
-                        setModalOpen(false)
-                    }}>
-                        <View>
-                            <View style={styles.dragIndicator} />
-                        </View>
-                    </Pressable>
-                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 10, paddingTop: 0, }}>
-                        <View style={{ width: "100%" }}>
-
-                            <ThemedText type='modalTitle'>{jobTitle}</ThemedText>
-                            <View style={{ width: 'auto', height: 1, backgroundColor: accent1, marginTop: 10, marginBottom: 10 }}></View>
-                            <ThemedText type="jobPrice">{jobPrice || "Доход не указан"}</ThemedText>
-                            <View style={{ flexDirection: 'column', flexWrap: 'wrap', gap: 6, marginBottom: 2, marginTop: 10, }}>
-                                <JobTag type={jobSpec} />
-                                <JobTag type={jobType} />
-                            </View>
-                            <ThemedText type="jobOrgGeo">Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии Описание этой вакансии</ThemedText>
-                            <ThemedText type="jobOrgGeo" style={{ marginTop: 10, }}>Плюсы этой вакансии: </ThemedText>
-                            <ThemedText type="jobOrgGeo">- Первый плюс</ThemedText>
-                            <ThemedText type="jobOrgGeo">- Второй плюс</ThemedText>
-                            <ThemedText type="jobOrgGeo">- Третий плюс</ThemedText>
-                            <ThemedText type="jobOrgGeo">- Четвертый плюс</ThemedText>
-                            <View style={{marginBottom: 10,}}>
-                                <ThemedText type="jobOrgGeo">Контакты</ThemedText>
-                                <ThemedText type="jobOrgGeo">Почта: rabota@example.com</ThemedText>
-                                <ThemedText type="jobOrgGeo">Телефон: +0 (000) 000 00-00</ThemedText>
-                            </View>
-
-                            <ThemedText type='jobOrgGeo'>{jobOrg || 'название не указано'}</ThemedText>
-                            <ThemedText type='jobOrgGeo'>{jobGeo || 'местоположение не указано'}</ThemedText>
-                        </View>
-                    </ScrollView>
+                <ThemedText type="jobOrgGeo">{jobDescription || 'Описание отсутствует'}</ThemedText>
+                <View style={{ marginBottom: 10 }}>
+                  <ThemedText type="jobOrgGeo">Контакты</ThemedText>
+                  <ThemedText type="jobOrgGeo">Почта: {jobEmail || 'не указана'}</ThemedText>
+                  <ThemedText type="jobOrgGeo">Телефон: {jobPhone || 'не указан'}</ThemedText>
                 </View>
-            </Modal>
-        </Pressable>
-
+                <ThemedText type="jobOrgGeo">{jobOrg || 'название не указано'}</ThemedText>
+                <ThemedText type="jobOrgGeo">{jobGeo || 'местоположение не указано'}</ThemedText>
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
+      </Pressable>
     );
-};
+  }
 
 const styles = StyleSheet.create({
     modal: {
@@ -184,6 +199,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignContent: 'center',
         alignItems: 'center',
+        alignSelf: 'flex-start'
     },
     title: {
         fontFamily: 'Comfortaa',
@@ -201,6 +217,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignContent: 'center',
         alignItems: 'center',
+        alignSelf: 'flex-start'
     },
     jobIcon: {
         display: 'none',

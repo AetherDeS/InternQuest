@@ -8,7 +8,7 @@ const {primary1, primary2, accent1, accent_gr1, accent_gr2} = ayuDark;
 export type ThemedTextProps = TextProps & {
     lightColor?: string;
     darkColor?: string;
-    type?: 'default' | 'title' | 'appTitle' | 'newsTitle' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo' | 'modalTitle';
+    type?: 'default' | 'title' | 'appTitle' | 'newsTitle' | 'jobTitle' | 'jobPrice' | 'jobOrgGeo' | 'modalTitle' | 'modalTitleEventsNews';
 };
 
 function ThemedText({
@@ -32,6 +32,7 @@ function ThemedText({
                 type === 'jobPrice' ? styles.jobPrice : undefined,
                 type === 'jobOrgGeo' ? styles.jobOrgGeo : undefined,
                 type === 'modalTitle' ? styles.modalTitle : undefined,
+                type === 'modalTitleEventsNews' ? styles.modalTitleEventsNews : undefined,
                 style,
             ]}
             {...rest}
@@ -92,7 +93,19 @@ const styles = StyleSheet.create({
         fontSize: 28,
         color: '#fff',
         wordWrap: 'wrap',
-    }
+    },    
+    modalTitleEventsNews: {
+        fontFamily: 'Comfortaa',
+        width: "100%",
+        fontSize: 20,
+        color: "#fff",
+
+        textShadowColor: "rgba(36, 36, 36, 1)",
+        textShadowOffset: {width: 1, height: 1},
+        textShadowRadius: 2,
+        marginTop: 180,
+        marginStart: 40,
+    },
 });
 
 export default ThemedText;
