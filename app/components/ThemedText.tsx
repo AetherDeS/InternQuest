@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },    
     modalTitleEventsNews: {
         fontFamily: 'Comfortaa',
-        width: "100%",
+        width: "auto",
         fontSize: 20,
         color: "#fff",
 
@@ -104,7 +104,8 @@ const styles = StyleSheet.create({
         textShadowOffset: {width: 1, height: 1},
         textShadowRadius: 2,
         marginTop: 180,
-        marginStart: 40,
+        marginStart: 20,
+        marginEnd: 20,
     },
 });
 

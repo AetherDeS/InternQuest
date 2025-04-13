@@ -10,6 +10,6 @@ export const ayuDark = {
     primary2: "#38373C",
     accent1: "#F5C89B",
     accent_gr1: "#F5C89B",
-    accent_gr2: "#EDC6A0"
+    accent_gr2: "#d1a375"
   };
   

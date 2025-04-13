@@ -3,20 +3,29 @@ import { StyleSheet, StatusBar, Text, View, Image, ScrollView, ActivityIndicator
 import { useState, useEffect, useCallback } from 'react';
 import MasonryList from '@react-native-seoul/masonry-list';
 import HeaderLogo from '../components/HeaderLogo';
+import EventButton from '../components/EventButton';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native'; // Импортируем useFocusEffect
 import ThemedText from '../components/ThemedText';
 import Modal from '../modal/CustomModal';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
+import * as SplashScreen from 'expo-splash-screen';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 const { height } = Dimensions.get('window');
 
+
+
 type Item = {
   id: string;
-  image: string;
+  specialization: string;
   date: string;
   title: string;
+  description: string;
+  org_title: string;
+  address: string;
+  link_to_form: string;
+  image: string;
 };
 
 const App = () => {
@@ -102,26 +111,37 @@ const App = () => {
           contentContainerStyle={styles.masonryContainer}
         />
         <Modal isOpen={modalOpen}>
-            {selectedItem && (
-          <View style={styles.modal}>
-                <Image source={{uri: selectedItem.image}} style={styles.modalBanner}/>
-                    <Pressable onPress={() => {setModalOpen(false)}}>
-                            <View style={styles.dragIndicator} />
-                    </Pressable>
-                    <ThemedText type="modalTitleEventsNews">{selectedItem.title}</ThemedText>
+          {selectedItem ? (
+            <View style={styles.modal}>
+              <Image source={{ uri: selectedItem.image }} style={styles.modalBanner} />
+              <Pressable onPress={() => setModalOpen(false)}>
+                <View style={styles.dragIndicator} />
+              </Pressable>
+              <ThemedText type="modalTitleEventsNews" style={{ textAlign: 'center' }}>{selectedItem.title}</ThemedText>
+              <Text style={styles.modalDate}>{selectedItem.date}</Text>
+              <View style={{marginStart: 20, marginEnd: 10,}}>
+                <Text style={styles.modalDescription}>{selectedItem.description || 'Описание отсутствует'}</Text>
+                <View style={{ width: 'auto', backgroundColor: accent1, height: 1, borderRadius: 2, marginTop: 4, marginBottom: 4,}}></View>
+                <Text style={styles.modalOrg}>{selectedItem.org_title || 'Организация не указана'}</Text>
+                <Text style={styles.modalAddress}>{selectedItem.address || 'Адрес не указан'}</Text>
               </View>
-            )}
+              <EventButton />
+            </View>
+          ) : (
+            <Text style={styles.modalText}>Выбранный элемент не найден</Text>
+          )}
         </Modal>
       </ScrollView>
     </View>
   );
 };
 
+
 const styles = StyleSheet.create({
   modal: {
     alignSelf: 'center',
     width: Dimensions.get('window').width + 2,
-    height: Dimensions.get('window').height - 100,
+    height: Dimensions.get('window').height - 40,
     marginTop: 66,
     backgroundColor: primary2,
     borderWidth: 1,
@@ -131,16 +151,12 @@ const styles = StyleSheet.create({
     borderBottomColor: primary2,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 0,
-    alignItems: 'center',
-
   },
   modalBanner: {
     position: "absolute",
     width: "100%",
     height: 190,
     borderRadius: 20,
-
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomRightRadius: 0,
@@ -153,6 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 8,
     marginBottom: 4,
+    alignSelf: 'center',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -180,17 +197,49 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   date: {
+    fontFamily: 'Comfortaa',
     color: '#F5C89B',
-    textAlign: 'center',
+    alignSelf: 'center',
     fontSize: 22,
     paddingTop: 4,
   },
+  modalDate: {
+    fontFamily: 'Comfortaa',
+    color: '#F5C89B',
+    alignSelf: 'center',
+    fontSize: 22,
+  },
   description: {
+    fontFamily: 'Comfortaa',
     color: '#fff',
     fontSize: 20,
-    wordWrap: 'wrap',
+    marginStart: 6,
+    marginEnd: 6,
+  },
+  modalDescription: {
+    fontFamily: 'Comfortaa',
+    width: 'auto',
+    color: '#fff',
+    fontSize: 18,
     marginTop: 0,
-    margin: 5,
+    marginBottom: 4,
+  },
+  modalText: {
+    color: '#fff',
+    fontSize: 16,
+    marginVertical: 4,
+  },
+  modalOrg: {
+    fontFamily: 'Comfortaa',
+    marginTop: 2,
+    color: "#fff",
+    fontSize: 16,
+  },
+  modalAddress: {
+    fontFamily: 'Comfortaa',
+    marginTop: 2,
+    color: "#fff",
+    fontSize: 16,
   },
 });
 

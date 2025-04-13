@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     modal: {
         alignSelf: 'center',
         width: Dimensions.get('window').width + 2,
-        height: height - 100,
+        height: height - 10,
         marginTop: 66,
         backgroundColor: primary2,
         borderWidth: 1,

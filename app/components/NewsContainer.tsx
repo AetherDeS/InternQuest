@@ -109,9 +109,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   modalDescription: {
+    fontFamily: 'Comfortaa',
     marginTop: 10,
-    fontSize: 16,
-    color: primary1,
+    fontSize: 18,
+    color: '#fff',
+    marginStart: 20,
+    marginEnd: 20,
   },
   modalDatetime: {
     marginTop: 4,
