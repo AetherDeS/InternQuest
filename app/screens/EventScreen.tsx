@@ -69,6 +69,14 @@ const App = () => {
     }, [])
   );
 
+  axios.get('http://77.239.115.153:3000/api/events')
+  .then(response => {
+    console.log('Ответ от сервера:', response.data);
+  })
+  .catch(error => {
+    console.error('Ошибка запроса:', error.message);
+  });
+  
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }

@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   modal: {
     alignSelf: 'center',
     width: Dimensions.get('window').width + 2,
-    height: Dimensions.get('window').height - 100,
+    height: Dimensions.get('window').height - 40,
     marginTop: 66,
     backgroundColor: primary2,
     borderWidth: 1,

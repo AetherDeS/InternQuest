@@ -60,6 +60,14 @@ function HomeScreen() {
     return <Text>Загрузка...</Text>;
   }
 
+  axios.get('http://77.239.115.153:3000/api/vacancies')
+  .then(response => {
+    console.log('Ответ от сервера:', response.data);
+  })
+  .catch(error => {
+    console.error('Ошибка запроса:', error.message);
+  });
+
   if (error) {
     return <Text>{error}</Text>;
   }

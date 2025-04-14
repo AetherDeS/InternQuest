@@ -54,6 +54,14 @@ function NewsScreen() {
     }
   };
 
+  axios.get('http://77.239.115.153:3000/api/news')
+  .then(response => {
+    console.log('Ответ от сервера:', response.data);
+  })
+  .catch(error => {
+    console.error('Ошибка запроса:', error.message);
+  });
+
   // Используем useFocusEffect для загрузки данных при фокусировке экрана
   useFocusEffect(
     React.useCallback(() => {

@@ -5,6 +5,11 @@ import { useEffect } from 'react';
 
 SplashScreen.preventAutoHideAsync();
 
+SplashScreen.setOptions({
+  duration: 200,
+  fade: true,
+})
+
 // Подключили шрифты через Хук <-- useFonts -->
 export default function RootLayout() {
    const [loaded] = useFonts({

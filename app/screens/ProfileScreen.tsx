@@ -1,6 +1,8 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useState } from 'react';
+import Icon from "react-native-vector-icons/Ionicons";
+import NewsScreen from './NewsScreen';
 import Modal from '../modal/CustomModal';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
@@ -8,6 +10,7 @@ import HeaderLogo from '@/app/components/HeaderLogo';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 
 export default function ProfileScreen() {
+    const [activeIcon, setActiveIcon] = useState<string | null>(null); // Состояние для отслеживания активной иконки
     const [choosenSpec, setChoosenSpec] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -24,14 +27,28 @@ export default function ProfileScreen() {
                     Ваше направление{' '}
                     <Text style={styles.highlightedText}>{choosenSpec}</Text>
                 </Text>
-                <View style={{flexDirection: 'row', gap: 6,}}>
+                <View style={{ flexDirection: 'row', gap: 6, }}>
                     <Pressable onPress={() => setModalOpen(true)} style={styles.button}>
                         <Text style={styles.buttonText}>Выбрать направление</Text>
                     </Pressable>
-                    <Pressable onPress={() => handleSpecSelect('')} style={{flex: 1,padding: 8,backgroundColor: accent1,borderRadius: 20, alignItems: 'center',}}>
+                    <Pressable onPress={() => handleSpecSelect('')} style={{ flex: 1, padding: 8, backgroundColor: accent1, borderRadius: 20, alignItems: 'center', }}>
                         <Text style={styles.buttonText}>Сбросить</Text>
                     </Pressable>
                 </View>
+            </View>
+            <View style={{ flexDirection: 'row', backgroundColor: primary2, marginTop: 20, height: 38, width: '94%', borderRadius: 20, alignSelf: 'center', justifyContent: 'space-around', alignItems: 'center', }}>
+                {/* Иконка "Поиск" */}
+                <Pressable onPress={() => setActiveIcon('jobs')}>
+                    <Icon name="search-outline" size={30} color={activeIcon === 'jobs' ? accent1 : '#A1A0A0'} />
+                </Pressable>
+                {/* Иконка "Календарь" */}
+                <Pressable onPress={() => setActiveIcon('events')}>
+                    <Icon name="calendar-outline" size={30} color={activeIcon === 'events' ? accent1 : '#A1A0A0'} />
+                </Pressable>
+                {/* Иконка "Чат" */}
+                <Pressable onPress={() => setActiveIcon('news')}>
+                    <Icon name="chatbubbles-outline" size={30} color={activeIcon === 'news' ? accent1 : '#A1A0A0'} />
+                </Pressable>
             </View>
             <Modal isOpen={modalOpen} animation='fade'>
                 {/* Центрируем модальное окно */}
@@ -78,12 +95,14 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontFamily: 'Comfortaa',
+        fontSize: 20,
         color: '#fff',
         marginBottom: 8,
         marginHorizontal: 6,
     },
     highlightedText: {
         color: accent1,
+        fontSize: 20,
     },
     button: {
         width: 'auto',
@@ -94,6 +113,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontFamily: 'Comfortaa',
+        fontSize: 18,
     },
     modalContainer: {
         flex: 0, // Занимает весь экран
