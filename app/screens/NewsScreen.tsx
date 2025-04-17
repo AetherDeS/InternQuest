@@ -1,11 +1,13 @@
 import React from 'react';
 import { ScrollView, View, Text, StatusBar } from 'react-native';
-import axios from 'axios';
-import { useFocusEffect } from '@react-navigation/native'; // Импортируем useFocusEffect
 import HeaderAppTitle from '../components/HeaderLogo';
 import ThemedText from '../components/ThemedText';
 import NewsContainer from '../components/NewsContainer';
 import MasonryList from '@react-native-seoul/masonry-list';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { db } from '../components/firConfig';
+import { onValue, ref, } from 'firebase/database';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2 } = ayuDark;
@@ -34,51 +36,26 @@ const formatDate = (dateString: string): string => {
 };
 
 function NewsScreen() {
-  const [data, setData] = React.useState<News[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [newsData, setNewsData] = useState<News | null>(null);
 
-  // Функция для загрузки данных из базы
-  const fetchData = async () => {
-    try {
-      const response = await axios.get<News[]>('http://77.239.115.153:3000/api/news');
-      if (!Array.isArray(response.data)) {
-        throw new Error('Некорректные данные с сервера');
-      }
-      setData(response.data);
-    } catch (err) {
-      console.error('Ошибка при запросе:', err);
-      setError(`Не удалось загрузить данные, уже чиним.\n${err}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const newsRef = ref(db, "internDatabase/news");
+    onValue(newsRef, (snapshot) => {
+      const data = snapshot.val();
+      setNewsData(data);
+    });
+  }, []);
+  console.log(newsData);
+  console.log(typeof(newsData));
 
-  axios.get('http://77.239.115.153:3000/api/news')
-  .then(response => {
-    console.log('Ответ от сервера:', response.data);
-  })
-  .catch(error => {
-    console.error('Ошибка запроса:', error.message);
-  });
+  const newsArray: News[] = newsData ? Object.values(newsData) : [];
 
-  // Используем useFocusEffect для загрузки данных при фокусировке экрана
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log('Экран новостей в фокусе. Загружаем данные...');
-      fetchData(); // Вызываем функцию загрузки данных
-      return () => {
-        console.log('Экран новостей потерял фокус.');
-      };
-    }, [])
-  );
-
-  if (loading) {
-    return <Text>Загрузка...</Text>;
-  }
-
-  if (error) {
-    return <Text>{error}</Text>;
+  if (!newsData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading event data...</Text>
+      </View>                                                                                                                             
+    )
   }
 
   return (
@@ -87,7 +64,7 @@ function NewsScreen() {
       <HeaderAppTitle />
       <ScrollView>
         <MasonryList
-          data={data}
+          data={newsArray}
           keyExtractor={(item) => item.id.toString()}
           numColumns={1}
           contentContainerStyle={{}}
@@ -103,6 +80,10 @@ function NewsScreen() {
             );
           }}
         />
+
+        <View>
+          <Text>{newsData.title}</Text>
+        </View>
       </ScrollView>
     </View>
   );

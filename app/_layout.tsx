@@ -1,4 +1,4 @@
- import { Stack } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
@@ -10,7 +10,7 @@ SplashScreen.setOptions({
   fade: true,
 })
 
-// Подключили шрифты через Хук <-- useFonts -->
+// Подключение шрифтов через Хук <-- useFonts -->
 export default function RootLayout() {
    const [loaded] = useFonts({
       'Comfortaa': require('../assets/fonts/Comfortaa.ttf'),
@@ -33,5 +33,3 @@ export default function RootLayout() {
     <Stack.Screen name="tabs" />
 </Stack>;
 }
-
-// 58

@@ -1,11 +1,13 @@
 import React from 'react';
 import { ScrollView, View, Text, StatusBar } from 'react-native';
-import axios from 'axios';
-import { useFocusEffect } from '@react-navigation/native'; // Импортируем useFocusEffect
 import HeaderAppTitle from '../components/HeaderLogo';
 import ThemedText from '../components/ThemedText';
 import JobContainer from '../components/JobContainer';
 import MasonryList from '@react-native-seoul/masonry-list';
+import { db } from '../components/firConfig';
+import { onValue, ref } from 'firebase/database';
+import { useState, useEffect } from 'react';
+
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2 } = ayuDark;
@@ -25,51 +27,25 @@ interface Vacancy {
 }
 
 function HomeScreen() {
-  const [data, setData] = React.useState<Vacancy[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [VacanciesData, setVacanciesData] = useState<Vacancy | null>(null);
 
-  // Функция для загрузки данных из базы
-  const fetchData = async () => {
-    try {
-      const response = await axios.get<Vacancy[]>('http://77.239.115.153:3000/api/vacancies');
-      if (!Array.isArray(response.data)) {
-        throw new Error('Некорректные данные с сервера');
-      }
-      setData(response.data);
-    } catch (err) {
-      console.error('Ошибка при запросе:', err);
-      setError(`Не удалось загрузить данные, уже чиним.\n${err}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const VacanciesRef = ref(db, "internDatabase/vacancies");
+    onValue(VacanciesRef, (snapshot) => {
+      const data = snapshot.val();
+      setVacanciesData(data);
+    });
+  }, []);
+  console.log(VacanciesData);
 
-  // Используем useFocusEffect для загрузки данных при фокусировке экрана
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log('Экран в фокусе. Загружаем данные...');
-      fetchData(); // Вызываем функцию загрузки данных
-      return () => {
-        console.log('Экран потерял фокус.');
-      };
-    }, [])
-  );
+  const VacanciesArray: Vacancy[] = VacanciesData ? Object.values(VacanciesData) : [];
 
-  if (loading) {
-    return <Text>Загрузка...</Text>;
-  }
-
-  axios.get('http://77.239.115.153:3000/api/vacancies')
-  .then(response => {
-    console.log('Ответ от сервера:', response.data);
-  })
-  .catch(error => {
-    console.error('Ошибка запроса:', error.message);
-  });
-
-  if (error) {
-    return <Text>{error}</Text>;
+  if (!VacanciesData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading event data...</Text>
+      </View>                                                                                                                             
+    )
   }
 
   // Функция для маппинга специализации
@@ -112,7 +88,7 @@ function HomeScreen() {
       <HeaderAppTitle />
       <ScrollView>
         <MasonryList
-          data={data}
+          data={VacanciesArray}
           keyExtractor={(item) => item.id.toString()}
           numColumns={1}
           contentContainerStyle={{ padding: 10 }}

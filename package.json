@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-community/blur": "^4.4.1",
+    "@react-native-firebase/app": "^21.14.0",
     "@react-native-seoul/masonry-list": "^1.4.2",
     "@react-navigation/bottom-tabs": "^7.2.1",
     "@react-navigation/native": "^7.0.15",
@@ -35,8 +36,10 @@
     "expo-symbols": "~0.2.1",
     "expo-system-ui": "~4.0.7",
     "expo-web-browser": "~14.0.2",
+    "firebase": "^11.6.0",
     "mysql": "^2.18.1",
     "normalize.css": "^8.0.1",
+    "npm": "^11.3.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.6",

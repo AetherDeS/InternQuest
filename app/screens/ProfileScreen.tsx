@@ -1,9 +1,11 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
-import { useState } from 'react';
+import { ScrollView, View, Text, StyleSheet, Pressable, Button } from 'react-native';
+import { useState, useEffect} from 'react';
 import Icon from "react-native-vector-icons/Ionicons";
 import NewsScreen from './NewsScreen';
 import Modal from '../modal/CustomModal';
+import { getDatabase, ref, onValue } from "firebase/database";
+import { db } from "../components/firConfig";   
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 import HeaderLogo from '@/app/components/HeaderLogo';
@@ -18,6 +20,7 @@ export default function ProfileScreen() {
         setChoosenSpec(spec); // Устанавливаем выбранную специальность
         setModalOpen(false);  // Закрываем модальное окно
     };
+    
 
     return (
         <View style={styles.body}>
@@ -31,24 +34,10 @@ export default function ProfileScreen() {
                     <Pressable onPress={() => setModalOpen(true)} style={styles.button}>
                         <Text style={styles.buttonText}>Выбрать направление</Text>
                     </Pressable>
-                    <Pressable onPress={() => handleSpecSelect('')} style={{ flex: 1, padding: 8, backgroundColor: accent1, borderRadius: 20, alignItems: 'center', }}>
+                    <Pressable onPress={() => handleSpecSelect('')} style={styles.button}>
                         <Text style={styles.buttonText}>Сбросить</Text>
                     </Pressable>
                 </View>
-            </View>
-            <View style={{ flexDirection: 'row', backgroundColor: primary2, marginTop: 20, height: 38, width: '94%', borderRadius: 20, alignSelf: 'center', justifyContent: 'space-around', alignItems: 'center', }}>
-                {/* Иконка "Поиск" */}
-                <Pressable onPress={() => setActiveIcon('jobs')}>
-                    <Icon name="search-outline" size={30} color={activeIcon === 'jobs' ? accent1 : '#A1A0A0'} />
-                </Pressable>
-                {/* Иконка "Календарь" */}
-                <Pressable onPress={() => setActiveIcon('events')}>
-                    <Icon name="calendar-outline" size={30} color={activeIcon === 'events' ? accent1 : '#A1A0A0'} />
-                </Pressable>
-                {/* Иконка "Чат" */}
-                <Pressable onPress={() => setActiveIcon('news')}>
-                    <Icon name="chatbubbles-outline" size={30} color={activeIcon === 'news' ? accent1 : '#A1A0A0'} />
-                </Pressable>
             </View>
             <Modal isOpen={modalOpen} animation='fade'>
                 {/* Центрируем модальное окно */}
@@ -75,6 +64,8 @@ export default function ProfileScreen() {
                     </View>
                 </View>
             </Modal>
+            <View>
+        </View>
         </View>
     );
 }
@@ -105,13 +96,16 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     button: {
-        width: 'auto',
-        padding: 8,
-        backgroundColor: accent1,
-        borderRadius: 20,
-        alignItems: 'center',
+        flex: 1, 
+        padding: 8, 
+        backgroundColor: accent1, 
+        borderRadius: 20, 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     buttonText: {
+        width: 'auto',
         fontFamily: 'Comfortaa',
         fontSize: 18,
     },
