@@ -3,7 +3,7 @@ import { StyleSheet, StatusBar, Text, View, Image, ScrollView, ActivityIndicator
 import { useState, useEffect, useCallback } from 'react';
 import MasonryList from '@react-native-seoul/masonry-list';
 import HeaderLogo from '../components/HeaderLogo';
-import EventContainer from '../components/eventContainer';
+import EventContainer from '../components/EventContainer';
 import { db } from '../components/firConfig';
 import { onValue, ref } from 'firebase/database';
 import { ayuDark } from '@/app/colors/colors';
