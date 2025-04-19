@@ -3,6 +3,7 @@ import { Pressable, View, Text, Image, StyleSheet, Dimensions } from 'react-nati
 import ThemedText from './ThemedText';
 import Modal from '../modal/CustomModal';
 import EventButton from './EventButton';
+
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;

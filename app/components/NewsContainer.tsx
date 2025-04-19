@@ -44,7 +44,7 @@ function NewsContainer({ text, img, description, datetime }: NewsContainerProps)
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    width: "90%",
+    width: "92%",
     height: 180,
     marginBottom: 20,
   },
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
   },
   bannerTitle: {
+    width: "94%",
     position: "absolute",
     bottom: 0,
     left: 0,

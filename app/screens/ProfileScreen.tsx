@@ -1,26 +1,27 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, Pressable, Button } from 'react-native';
-import { useState, useEffect} from 'react';
-import Icon from "react-native-vector-icons/Ionicons";
-import NewsScreen from './NewsScreen';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Pressable, Button } from 'react-native';
+
+import HeaderLogo from '@/app/components/HeaderLogo';
 import Modal from '../modal/CustomModal';
-import { getDatabase, ref, onValue } from "firebase/database";
-import { db } from "../components/firConfig";   
+import { useDispatch, useSelector } from 'react-redux';
+import { setChoosenSpec, RootState } from '../constants/store';
+
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
-import HeaderLogo from '@/app/components/HeaderLogo';
 const { primary1, primary2, accent1, accent_gr1, accent_gr2 } = ayuDark;
 
 export default function ProfileScreen() {
-    const [activeIcon, setActiveIcon] = useState<string | null>(null); // Состояние для отслеживания активной иконки
-    const [choosenSpec, setChoosenSpec] = useState("");
+    const dispatch = useDispatch();
     const [modalOpen, setModalOpen] = useState(false);
+    const choosenSpec = useSelector((state: RootState) => state.choosenSpec);
+    const [choosenSpecLabel, setChoosenSpecLabel] = useState("");
 
-    const handleSpecSelect = (spec: string) => {
-        setChoosenSpec(spec); // Устанавливаем выбранную специальность
+    const handleSpecSelect = (NewsSpec: string, specLabel: string) => {
+        dispatch(setChoosenSpec(NewsSpec)); // Устанавливаем выбранную специальность
         setModalOpen(false);  // Закрываем модальное окно
+        setChoosenSpecLabel(specLabel);
     };
-    
+
 
     return (
         <View style={styles.body}>
@@ -28,13 +29,13 @@ export default function ProfileScreen() {
             <View style={styles.infoContainer}>
                 <Text style={styles.infoText}>
                     Ваше направление{' '}
-                    <Text style={styles.highlightedText}>{choosenSpec}</Text>
+                    <Text style={styles.highlightedText}>{choosenSpecLabel || " "}</Text>
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 6, }}>
                     <Pressable onPress={() => setModalOpen(true)} style={styles.button}>
                         <Text style={styles.buttonText}>Выбрать направление</Text>
                     </Pressable>
-                    <Pressable onPress={() => handleSpecSelect('')} style={styles.button}>
+                    <Pressable onPress={() => handleSpecSelect("", "")} style={styles.button}>
                         <Text style={styles.buttonText}>Сбросить</Text>
                     </Pressable>
                 </View>
@@ -43,19 +44,19 @@ export default function ProfileScreen() {
                 {/* Центрируем модальное окно */}
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Pressable onPress={() => handleSpecSelect("Мастер по ремонту и обслуживанию автомобилей")} style={styles.specButton}>
+                        <Pressable onPress={() => handleSpecSelect("Автомеханик", "Мастер по ремонту и обслуживанию автомобилей")} style={styles.specButton}>
                             <Text style={styles.specButtonText}>Мастер по ремонту и обслуживанию автомобилей</Text>
                         </Pressable>
-                        <Pressable onPress={() => handleSpecSelect("Мастер столярно-плотничных, паркетных и стекольных работ")} style={styles.specButton}>
+                        <Pressable onPress={() => handleSpecSelect("Столяр", "Мастер столярно-плотничных, паркетных и стекольных работ")} style={styles.specButton}>
                             <Text style={styles.specButtonText}>Мастер столярно-плотничных, паркетных и стекольных работ</Text>
                         </Pressable>
-                        <Pressable onPress={() => handleSpecSelect("Сварщик")} style={styles.specButton}>
+                        <Pressable onPress={() => handleSpecSelect("Сварщик", "Сварщик")} style={styles.specButton}>
                             <Text style={styles.specButtonText}>Сварщик</Text>
                         </Pressable>
-                        <Pressable onPress={() => handleSpecSelect("Графический дизайн")} style={styles.specButton}>
+                        <Pressable onPress={() => handleSpecSelect("Дизайнер", "Графический дизайн")} style={styles.specButton}>
                             <Text style={styles.specButtonText}>Графический дизайн</Text>
                         </Pressable>
-                        <Pressable onPress={() => handleSpecSelect("Информационные системы и программирование")} style={styles.specButton}>
+                        <Pressable onPress={() => handleSpecSelect("Программист", "Информационные системы и программирование")} style={styles.specButton}>
                             <Text style={styles.specButtonText}>Информационные системы и программирование</Text>
                         </Pressable>
                         <Pressable onPress={() => setModalOpen(false)} style={styles.closeButton}>
@@ -63,9 +64,7 @@ export default function ProfileScreen() {
                         </Pressable>
                     </View>
                 </View>
-            </Modal>
-            <View>
-        </View>
+            </Modal> 
         </View>
     );
 }
@@ -77,12 +76,12 @@ const styles = StyleSheet.create({
         flex: 1, // Добавляем flex для корректного центрирования
     },
     infoContainer: {
-        width: '94%',
+        width: '92%',
         backgroundColor: primary2,
         padding: 8,
         borderRadius: 20,
         alignSelf: 'center',
-        marginTop: 20,
+        marginTop: 6,
     },
     infoText: {
         fontFamily: 'Comfortaa',
@@ -96,11 +95,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     button: {
-        flex: 1, 
-        padding: 8, 
-        backgroundColor: accent1, 
-        borderRadius: 20, 
-        alignItems: 'center', 
+        flex: 1,
+        padding: 8,
+        backgroundColor: accent1,
+        borderRadius: 20,
+        alignItems: 'center',
         justifyContent: 'center',
         alignContent: 'center',
     },

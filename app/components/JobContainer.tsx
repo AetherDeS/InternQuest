@@ -110,7 +110,7 @@ export function JobContainer({
       <Pressable onPress={() => setModalOpen(true)}>
         <View
           style={{
-            width: '94%',
+            width: '97%',
             height: 'auto',
             paddingTop: 4,
             padding: 14,

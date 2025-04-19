@@ -1,9 +1,12 @@
 import React from 'react';
 import { StyleSheet, StatusBar, Text, View, Image, ScrollView, ActivityIndicator, Pressable, Dimensions } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../constants/store';
 import MasonryList from '@react-native-seoul/masonry-list';
 import HeaderLogo from '../components/HeaderLogo';
 import EventContainer from '../components/EventContainer';
+
 import { db } from '../components/firConfig';
 import { onValue, ref } from 'firebase/database';
 import { ayuDark } from '@/app/colors/colors';
@@ -27,6 +30,7 @@ type Event = {
 const App = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [eventsData, setEventsData] = useState<Record<string, Event> | null>(null); // Изменено: ожидаем объект или null
+  const choosenSpec = useSelector((state: RootState) => state.choosenSpec);
 
   useEffect(() => {
     const eventsRef = ref(db, "internDatabase/events");
@@ -51,32 +55,37 @@ const App = () => {
     );
   }
 
+  const filteredEvents: Event[] =
+  choosenSpec !== "" 
+    ? eventsArray.filter(event => event.specialization === choosenSpec) 
+    : eventsArray; // Если choosenSpec пусто, выводятся все события.
+
   return (
     <View style={{ backgroundColor: primary1, height: "100%", }}>
-      <HeaderLogo />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <MasonryList
-          data={eventsArray}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          contentContainerStyle={styles.masonryContainer}
-          renderItem={({ item }: { item: unknown }) => {
-            const events = item as Event; // Явное приведение типа
-            return (
-              <EventContainer
-                id={events.id}
-                date={events.date}
-                title={events.title}
-                description={events.description}
-                org_title={events.org_title}
-                address={events.address}
-                image={events.image}
-                link_to_form={events.link_to_form}
-              />
-            );
-          }}
-        />
-      </ScrollView>
+        <HeaderLogo />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <MasonryList
+            data={filteredEvents}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            contentContainerStyle={styles.masonryContainer}
+            renderItem={({ item }: { item: unknown }) => {
+              const events = item as Event; // Явное приведение типа
+              return (
+                <EventContainer
+                  id={events.id}
+                  date={events.date}
+                  title={events.title}
+                  description={events.description}
+                  org_title={events.org_title}
+                  address={events.address}
+                  image={events.image}
+                  link_to_form={events.link_to_form}
+                />
+              );
+            }}
+          />
+        </ScrollView>
     </View>
   );
 };
@@ -119,10 +128,11 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     padding: 10,
-    paddingTop: 0,
+    paddingTop: 2,
     backgroundColor: primary1,
   },
   masonryContainer: {
+    width: "100%",
     paddingBottom: 10,
   },
   item: {

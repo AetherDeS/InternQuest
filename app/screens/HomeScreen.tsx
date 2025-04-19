@@ -8,6 +8,8 @@ import { db } from '../components/firConfig';
 import { onValue, ref } from 'firebase/database';
 import { useState, useEffect } from 'react';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../constants/store';
 // Палитра
 import { ayuDark } from '@/app/colors/colors';
 const { primary1, primary2 } = ayuDark;
@@ -28,25 +30,36 @@ interface Vacancy {
 
 function HomeScreen() {
   const [VacanciesData, setVacanciesData] = useState<Vacancy | null>(null);
+  const choosenSpec = useSelector((state: RootState) => state.choosenSpec);
+
 
   useEffect(() => {
-    const VacanciesRef = ref(db, "internDatabase/vacancies");
-    onValue(VacanciesRef, (snapshot) => {
+    const eventsRef = ref(db, "internDatabase/vacancies");
+    onValue(eventsRef, (snapshot) => {
       const data = snapshot.val();
-      setVacanciesData(data);
+      if (data && typeof data === 'object') { // Проверка типа данных
+        setVacanciesData(data as Vacancy);  // Преобразование типа
+      } else {
+        console.error("Неожиданный формат данных из Firebase:", data);
+        setVacanciesData(null); // Устанавливаем в null в случае ошибки
+      }
     });
   }, []);
-  console.log(VacanciesData);
 
   const VacanciesArray: Vacancy[] = VacanciesData ? Object.values(VacanciesData) : [];
 
   if (!VacanciesData) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading event data...</Text>
-      </View>                                                                                                                             
-    )
+        <Text>Загрузка из базы</Text>
+      </View>
+    );
   }
+
+  const filteredVacancies: Vacancy[] =
+  choosenSpec !== "" 
+    ? VacanciesArray.filter(event => event.specialization === choosenSpec) 
+    : VacanciesArray; // Если choosenSpec пусто, выводятся все события.
 
   // Функция для маппинга специализации
   const mapSpecialization = (specialization: string) => {
@@ -86,9 +99,9 @@ function HomeScreen() {
     <View style={{ width: '100%', height: '100%', backgroundColor: '#29272B' }}>
       <StatusBar barStyle="light-content" backgroundColor={primary1} />
       <HeaderAppTitle />
-      <ScrollView>
+      <ScrollView contentContainerStyle={{marginTop: -4,}}>
         <MasonryList
-          data={VacanciesArray}
+          data={filteredVacancies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={1}
           contentContainerStyle={{ padding: 10 }}
