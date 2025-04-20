@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     specContainer: {
         width: 'auto',
         height: 'auto',
+        paddingTop: 5,
         padding: 6,
         flexDirection: 'row',
         backgroundColor: accent1,
@@ -212,6 +213,7 @@ const styles = StyleSheet.create({
     jobContainer: {
         width: 'auto',
         height: 'auto',
+        paddingTop: 5,
         padding: 6,
         flexDirection: 'row',
         borderRadius: 20,

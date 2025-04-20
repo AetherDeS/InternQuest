@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MyApp",
+    "name": "InternQuest",
     "slug": "MyApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#29272B"
       },
       "package": "com.anonymous.MyApp"
     },
@@ -35,7 +35,7 @@
           "image": "./assets/images/custom-splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#29272B"
         }
       ]
     ],
